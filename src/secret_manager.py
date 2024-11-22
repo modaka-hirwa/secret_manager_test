@@ -3,6 +3,8 @@ from logging import exception
 import os
 from pykeepass import PyKeePass, create_database
 from src.log import setup_logging
+from src.metadata import add_metadata
+from src.config import SQLITE_FILE
 
 
 #Set up logging to capture all levels of logs
@@ -21,6 +23,7 @@ def create_database_kdbx(database_path, master_password):
             logger.error(f"Failed to create KeePass database at {database_path}")
     except Exception as e:
         logger.exception(f"error to creating KeePass database: {e}")
+
 def add_secret(database_path, db_password, group_name, title, username, secret):
     """Add a new secret ( entry) to the KeePass database. """
     try:
@@ -37,6 +40,19 @@ def add_secret(database_path, db_password, group_name, title, username, secret):
 
         if entry:
             logger.info(f"secret '{title}' successfully added to the KeePass database. ")
+
+            add_metadata(
+                name=title,
+                secret_type='password',
+                db_path=SQLITE_FILE,
+                owner=username,
+                storage_location=database_path,
+                environment='prod',  # Can adjust if needed
+                expiration_date=None,
+                rotation_frequency=30,  # Set default or dynamic value
+                compliance_tags='GDPR',
+                associated_service='KeePass'
+            )
         else:
             logger.error(f"Failed to add secret '{title}' to the KeePass database. ")
         kp.save()
@@ -79,7 +95,5 @@ def delete_secret(database_path, db_password_master, title):
             logger.warning(f"secret '{title}' not found in KeePass database. ")
     except Exception as e:
         logger.exception(f"error deleting secret '{title}': {e}")
-
-
 
 
