@@ -1,0 +1,22 @@
+# Ignore Python bytecode files
+*.pyc
+*.pyo
+
+# Ignore virtual environment directories
+venv/
+env/
+.venv/
+# Ignore log files
+*.log
+
+# Ignore test-related artifacts
+*.tox/
+*.coverage
+
+# Ignore IDE or editor-specific files
+.vscode/
+.idea/
+
+# Ignore OS-specific files (macOS example)
+.DS_Store
+
